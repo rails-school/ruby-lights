@@ -2,6 +2,7 @@ require 'green_shoes'
 
 Shoes.app {
 
+  # creates a light at the given position with the given color
   def light(position, color)
     fill gray
     light = oval(left:10 + 90*position, top:10, radius:40)
@@ -17,25 +18,26 @@ Shoes.app {
     return light
   end
 
-  l0 = light(0, red)
-  l1 = light(1, blue)
-  l2 = light(2, green)
+  def run_chase_animation(lights = [])
+    frames_per_second = lights.length
 
-  l1.click do
-    frames_per_second = 30
-    animate 3 do |frame|
-      frame = frame % 3
-      l0.style(fill: green)
-      l1.style(fill: green)
-      l2.style(fill:green)
-      if (frame == 0)
-        l0.style(fill: red)
-      elsif (frame == 1)
-        l1.style(fill: red)
-      else
-        l2.style(fill: red)
-      end
+    animate frames_per_second do |frame|
+      light_idx = frame % frames_per_second
+
+      # set all the lights to green
+      lights.each{ |light| light.style(fill: green) }
+
+      # set the light_idx light to red
+      lights[light_idx].style(fill: red)
     end
+  end
+
+  lights = [light(0, fuchsia),
+            light(1, blue),
+            light(2, green)]
+
+  lights[1].click do
+    run_chase_animation(lights)
   end
 
 }
